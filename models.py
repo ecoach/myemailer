@@ -101,7 +101,7 @@ class Message(models.Model):
         bcc = self.bcc_query.get_bcc()
         subject = self.subject 
         bodytext = 'html message'
-        html_content = self.body + str(self.bcc)
+        html_content = self.body
         # archive settings
         self.created = datetime.now()
         self.bcc = bcc
