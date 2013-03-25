@@ -19,7 +19,7 @@ class Emailer_Draft_Form(forms.Form):
 
 class Emailer_Send_Form(forms.Form):
     message_name  = forms.CharField(required=False, widget=forms.Textarea(attrs={'cols': 50, 'rows': 1}))
-    commit = forms.ChoiceField(widget=forms.RadioSelect, choices=(('0', 'Test run',), ('1', 'Commit',)), initial=0)
+    commit = forms.ChoiceField(widget=forms.RadioSelect, choices=(('0', 'Test run'), ('1', 'Send'), ('2', 'Save')), initial=0)
 
 class Emailer_Archive_Form(forms.Form):
     email_message = forms.ModelChoiceField(required=True, queryset=Message.objects.all().order_by('-id'))

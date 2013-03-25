@@ -94,7 +94,7 @@ class Message(models.Model):
         old.save()
         return old
 
-    def send(self, username):
+    def send(self, username, action):
         # message settings
         if username == 'jtritz':
             sentfrom = 'ecoach-help@umich.edu'
@@ -104,23 +104,30 @@ class Message(models.Model):
             bodytext = 'html message'
             html_content = self.body
             # archive settings
-            self.created = datetime.now()
+            if action == '1':
+                self.created = datetime.now()
+            elif action == '2':
+                self.created = None
             self.bcc = bcc
             self.sender = sentfrom
             self.to = sendto
             self.save() 
             # use the settings
-            message = EmailMultiAlternatives(
-                subject, 
-                bodytext, 
-                sentfrom,
-                sendto, 
-                bcc, 
-                headers = {'Reply-To': 'ecoach-help@umich.edu'}
-            )
-            message.attach_alternative(html_content, "text/html")
-            #message.attach_file(self.m_attached_filepath)
-            message.send()
+            if action == '1': # send commit
+                message = EmailMultiAlternatives(
+                    subject, 
+                    bodytext, 
+                    sentfrom,
+                    sendto, 
+                    bcc, 
+                    headers = {'Reply-To': 'ecoach-help@umich.edu'}
+                )
+                message.attach_alternative(html_content, "text/html")
+                #message.attach_file(self.m_attached_filepath)
+                try:
+                    message.send()
+                except:
+                    pass # in development this needs to fail
             return True
         else:
             return False

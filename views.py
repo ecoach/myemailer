@@ -134,9 +134,9 @@ def email_send_view(request):
             f_name = form.cleaned_data['message_name']
             f_commit = form.cleaned_data['commit']
             emailer.save()
-            if f_commit == '1':
+            if f_commit == '1' or f_commit == '2': # send commit
                 # send the message
-                if emailer.send(request.user.username):
+                if emailer.send(username=request.user.username, action=f_commit):
                     # make new emailer and save to prefs
                     profile = request.user.get_profile()
                     prefs = profile.prefs
