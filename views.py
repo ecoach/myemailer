@@ -34,7 +34,8 @@ def email_bcc_view(request):
         if form.is_valid():
             # process the form :)
             f_select_bcc = form.cleaned_data['select_bcc']
-            f_sql = form.cleaned_data['sql']
+            if request.user.username == 'jtritz':
+                f_sql = form.cleaned_data['sql']
             f_qname = form.cleaned_data['query_name']
             f_commit = form.cleaned_data['commit']
             emailer.bcc_query.name = f_qname
@@ -133,7 +134,7 @@ def email_send_view(request):
             emailer.save()
             if f_commit == '1':
                 # send the message
-                emailer.send()
+                emailer.send(request.user.username)
                 # make new emailer and save to prefs
                 profile = request.user.get_profile()
                 prefs = profile.prefs

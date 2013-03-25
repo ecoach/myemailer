@@ -94,32 +94,33 @@ class Message(models.Model):
         old.save()
         return old
 
-    def send(self):
+    def send(self, username):
         # message settings
-        sentfrom = 'ecoach-help@umich.edu'
-        sendto = ['jtritz@umich.edu']
-        bcc = self.bcc_query.get_bcc()
-        subject = self.subject 
-        bodytext = 'html message'
-        html_content = self.body
-        # archive settings
-        self.created = datetime.now()
-        self.bcc = bcc
-        self.sender = sentfrom
-        self.to = sendto
-        self.save() 
-        # use the settings
-        message = EmailMultiAlternatives(
-            subject, 
-            bodytext, 
-            sentfrom,
-            sendto, 
-            bcc, 
-            headers = {'Reply-To': 'ecoach-help@umich.edu'}
-        )
-        message.attach_alternative(html_content, "text/html")
-        #message.attach_file(self.m_attached_filepath)
-        message.send()
+        if username == 'jtritz':
+            sentfrom = 'ecoach-help@umich.edu'
+            sendto = ['jtritz@umich.edu']
+            bcc = self.bcc_query.get_bcc()
+            subject = self.subject 
+            bodytext = 'html message'
+            html_content = self.body
+            # archive settings
+            self.created = datetime.now()
+            self.bcc = bcc
+            self.sender = sentfrom
+            self.to = sendto
+            self.save() 
+            # use the settings
+            message = EmailMultiAlternatives(
+                subject, 
+                bodytext, 
+                sentfrom,
+                sendto, 
+                bcc, 
+                headers = {'Reply-To': 'ecoach-help@umich.edu'}
+            )
+            message.attach_alternative(html_content, "text/html")
+            #message.attach_file(self.m_attached_filepath)
+            message.send()
 
 
 
