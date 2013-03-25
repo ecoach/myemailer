@@ -121,6 +121,8 @@ class Message(models.Model):
             message.attach_alternative(html_content, "text/html")
             #message.attach_file(self.m_attached_filepath)
             message.send()
-
+            return True
+        else:
+            return False
 
 
