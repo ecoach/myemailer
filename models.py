@@ -38,7 +38,9 @@ class BCC_Query(models.Model):
     def get_bcc(self):
         cursor = connection.cursor()
         try:
-            query = "select user_id from mydata3_w_13data where " + self.sql
+            # update myemailer_bcc_query set myemailer_bcc_query.sql = concat("select user_id from mydata3_w_13data where ", myemailer_bcc_query.sql);
+            # query = "select user_id from mydata3_w_13data where " + self.sql
+            query = self.sql
             res = cursor.execute(query)
             res = cursor.fetchall()
             tup = list(zip(*res)[0])
