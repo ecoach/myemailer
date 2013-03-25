@@ -1,5 +1,6 @@
 #from django.contrib.auth import login, authenticate, logout
-from django.shortcuts import render
+from django.http import HttpResponse
+from django.shortcuts import render, render_to_response
 from mycoach3.nav import StaffNav, EmailerNav
 from myemailer.models import Message, BCC_Query
 from mycoach3.views import Log_Request
@@ -10,7 +11,6 @@ from myemailer.forms import (
     Emailer_Archive_Form
     )
 from django.shortcuts import redirect
-from datetime import datetime
 
 def email_bcc_view(request):
     Log_Request(request)
@@ -18,7 +18,11 @@ def email_bcc_view(request):
     # get the user's message object
     profile = request.user.get_profile()
     prefs = profile.prefs
-    emailer = Message.factory(user=request.user, pk=prefs["email_message_pk"])
+    try:
+        pk=prefs["email_message_pk"]
+    except:
+        pk = None
+    emailer = Message.factory(user=request.user, pk=pk)
     prefs['email_message_pk'] = emailer.id
     profile.prefs = prefs
     profile.save()
@@ -64,13 +68,14 @@ def email_bcc_view(request):
 def email_draft_view(request):
     Log_Request(request)
 
-    profile = request.user.get_profile()
-    prefs = profile.prefs
-
     # get the user's message object
     profile = request.user.get_profile()
     prefs = profile.prefs
-    emailer = Message.factory(user=request.user, pk=prefs["email_message_pk"])
+    try:
+        pk=prefs["email_message_pk"]
+    except:
+        pk = None
+    emailer = Message.factory(user=request.user, pk=pk)
     prefs['email_message_pk'] = emailer.id
     profile.prefs = prefs
     profile.save()
@@ -108,7 +113,11 @@ def email_send_view(request):
     # get the user's message object
     profile = request.user.get_profile()
     prefs = profile.prefs
-    emailer = Message.factory(user=request.user, pk=prefs["email_message_pk"])
+    try:
+        pk=prefs["email_message_pk"]
+    except:
+        pk = None
+    emailer = Message.factory(user=request.user, pk=pk)
     prefs['email_message_pk'] = emailer.id
     profile.prefs = prefs
     profile.save()
@@ -124,9 +133,6 @@ def email_send_view(request):
             emailer.save()
             if f_commit == '1':
                 # send the message
-                emailer.created = datetime.now()
-                emailer.bcc = emailer.bcc_query.get_bcc()
-                emailer.save() 
                 emailer.send()
                 # make new emailer and save to prefs
                 profile = request.user.get_profile()
@@ -151,13 +157,14 @@ def email_send_view(request):
 def email_archive_view(request):
     Log_Request(request)
 
-    profile = request.user.get_profile()
-    prefs = profile.prefs
-
     # get the user's message object
     profile = request.user.get_profile()
     prefs = profile.prefs
-    emailer = Message.factory(user=request.user, pk=prefs["email_message_pk"])
+    try:
+        pk=prefs["email_message_pk"]
+    except:
+        pk = None
+    emailer = Message.factory(user=request.user, pk=pk)
     prefs['email_message_pk'] = emailer.id
     profile.prefs = prefs
     profile.save()

@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db import connection, transaction
 from django.core.mail import EmailMultiAlternatives
+from datetime import datetime
 
 # Create your models here.
 
@@ -94,12 +95,20 @@ class Message(models.Model):
         return old
 
     def send(self):
+        # message settings
         sentfrom = 'ecoach-help@umich.edu'
         sendto = ['jtritz@umich.edu']
-        bcc = self.bcc
+        bcc = self.bcc_query.get_bcc()
         subject = self.subject 
         bodytext = 'html message'
         html_content = self.body + str(self.bcc)
+        # archive settings
+        self.created = datetime.now()
+        self.bcc = bcc
+        self.sender = sentfrom
+        self.to = sendto
+        self.save() 
+        # use the settings
         message = EmailMultiAlternatives(
             subject, 
             bodytext, 
