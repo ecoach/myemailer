@@ -1,0 +1,53 @@
+{% extends 'new_base.html' %}
+
+{% block status_report %}
+    <table width='100%'>
+        <tr>
+            <td>
+    What you see is what you get... <br>
+            </td>
+            <td align='right'>
+                &nbsp; <!-- possibly link a download or something -->
+            </td>
+        </tr>
+    </table>
+{% endblock %}
+
+
+{% block left_side %}
+
+<table>
+    <tr>
+        <td>
+            <table><tr><td>message subject:</td><td>{{ form.subject }}</td></tr></table>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            {{ form.body }}
+        </td>
+    </tr>
+    <tr>
+        <td valign='top'>
+        </td>
+    </tr>
+</table>
+
+{% endblock %}
+
+
+{% block right_side %}
+
+<table width='100%'>
+    <tr>
+        <td valign='top'>
+        {{ message_subject }}
+        <hr>
+        {{ message_body|safe}}
+        </td>
+    </tr>
+</table>
+
+{% endblock %}
+
+

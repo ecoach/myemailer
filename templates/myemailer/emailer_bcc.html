@@ -1,0 +1,64 @@
+{% extends 'new_base.html' %}
+
+{% block status_report %}
+    <table width='100%'>
+        <tr>
+            <td>
+    Active BCC Query: {{active_bcc_query}} <br>
+            </td>
+            <td align='right'>
+                &nbsp; <!-- possibly link a download or something -->
+            </td>
+        </tr>
+    </table>
+{% endblock %}
+
+
+{% block left_side %}
+
+<table>
+    <tr>
+        <td>Copy an Archived Query</td>
+    </tr>
+    <tr>
+        <td>
+            {{ form.select_bcc }}
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <br> (or) <br><br> Edit Active Query
+            {{ form.commit }}
+            <table><tr><td>query name:</td><td>{{ form.query_name }}</td></tr></table>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            {{ form.sql }}
+        </td>
+    </tr>
+    <tr>
+        <td valign='top'>
+        </td>
+    </tr>
+</table>
+
+{% endblock %}
+
+
+{% block right_side %}
+
+<table>
+    <tr>
+        <td>Query Result:</td>
+    </tr>
+    <tr>
+        <td valign='top'>
+        {{bcc_query_result}}
+        </td>
+    </tr>
+</table>
+
+{% endblock %}
+
+
