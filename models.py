@@ -99,7 +99,8 @@ class Message(models.Model):
     def send(self, username, action):
         # message settings
         if username == 'jtritz':
-            sentfrom = 'ecoach-help@umich.edu'
+            #sentfrom = 'ecoach-help@umich.edu'
+            sentfrom = settings.COACH_EMAIL
             sendto = ['jtritz@umich.edu']
             bcc = self.bcc_query.get_bcc()
             subject = self.subject 

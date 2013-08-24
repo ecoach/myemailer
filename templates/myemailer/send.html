@@ -1,0 +1,28 @@
+{% extends 'myemailer/base_emailer.html' %}
+
+{% block status_report %}
+Toggle action: (Test run or Commit)
+{% endblock %}
+
+
+{% block left_side %}
+    {{ form.commit }}
+{% endblock %}
+
+
+{% block right_side %}
+
+<table>
+    <tr>
+        <td>Message Summary:</td>
+    </tr>
+    <tr>
+        <td valign='top'>
+        ...
+        </td>
+    </tr>
+</table>
+
+{% endblock %}
+
+

@@ -1,0 +1,34 @@
+{% extends 'myemailer/base_emailer.html' %}
+
+{% block status_report %}
+    Message name: {{emailer_name}}
+{% endblock %}
+
+
+{% block left_side %}
+
+    <table>
+        <tr>
+            <td>
+                Archived messages:
+            </td>
+            <td>
+                {{ form.email_message }}
+            </td>
+        </tr>
+    </table>
+
+{% endblock %}
+
+
+{% block right_side %}
+
+    <table>
+        <tr>
+            <td class='wizard_report'>
+                {% include "myemailer/message_report.html" %}
+            </td>
+        </tr>
+    </table>
+
+{% endblock %}

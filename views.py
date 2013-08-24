@@ -1,10 +1,10 @@
 #from django.contrib.auth import login, authenticate, logout
 from django.http import HttpResponse
 from django.shortcuts import render, render_to_response
-from mycoach3.nav import StaffNav, EmailerNav
-from myemailer.models import Message, BCC_Query
-from mycoach3.views import Log_Request
-from myemailer.forms import (
+from mynav.nav import main_nav, tasks_nav
+from .models import Message, BCC_Query
+from .steps import steps_nav
+from .forms import (
     Emailer_Bcc_Form,
     Emailer_Draft_Form,
     Emailer_Send_Form,
@@ -12,21 +12,9 @@ from myemailer.forms import (
     )
 from django.shortcuts import redirect
 
-def email_bcc_view(request):
-    Log_Request(request)
-
-    # get the user's message object
-    profile = request.user.get_profile()
-    prefs = profile.prefs
-    try:
-        pk=prefs["email_message_pk"]
-    except:
-        pk = None
-    emailer = Message.factory(user=request.user, pk=pk)
-    prefs['email_message_pk'] = emailer.id
-    profile.prefs = prefs
-    profile.save()
-    
+def bcc_view(request):
+    #Log_Request(request)
+    emailer = task_object(request.user)
     if request.method == 'POST':
         form = Emailer_Bcc_Form(
             data=request.POST
@@ -50,7 +38,7 @@ def email_bcc_view(request):
                 # copy and old bcc query
                 emailer.bcc_query = BCC_Query.copy(f_select_bcc, emailer.bcc_query)
             emailer.save()
-            return redirect('email_bcc_view')
+            #return redirect('email_bcc_view')
     else:
         form = Emailer_Bcc_Form(initial={
             'select_bcc' : emailer.bcc_query.id, 
@@ -59,30 +47,19 @@ def email_bcc_view(request):
             'commit': 0
         })
 
-    return render(request, 'mycoach3/emailer_bcc.html', {
+    return render(request, 'myemailer/bcc.html', {
+        "main_nav": main_nav(request.user, 'staff_view'),
+        "tasks_nav": tasks_nav(request.user, 'emailer'),
+        "steps_nav": steps_nav(request.user, 'bcc'),
         "form": form,
         "args": request.GET,
-        "nav_staff": StaffNav(request.path),
-        "nav_mailer": EmailerNav(request.path),
         "active_bcc_query": emailer.bcc_query.id_name(),
         "bcc_query_result": emailer.bcc_query.get_bcc()
     })
 
-def email_draft_view(request):
-    Log_Request(request)
-
-    # get the user's message object
-    profile = request.user.get_profile()
-    prefs = profile.prefs
-    try:
-        pk=prefs["email_message_pk"]
-    except:
-        pk = None
-    emailer = Message.factory(user=request.user, pk=pk)
-    prefs['email_message_pk'] = emailer.id
-    profile.prefs = prefs
-    profile.save()
-
+def draft_view(request):
+    #Log_Request(request)
+    emailer = task_object(request.user)
     if request.method == 'POST':
         form = Emailer_Draft_Form(
             data=request.POST
@@ -94,37 +71,26 @@ def email_draft_view(request):
             emailer.subject = f_subject
             emailer.body = f_body 
             emailer.save()
-            return redirect('email_draft_view')
+            #return redirect('email_draft_view')
     else:
         form = Emailer_Draft_Form(initial={
             'subject' : emailer.subject, 
             'body': emailer.body
         })
 
-    return render(request, 'mycoach3/emailer_draft.html', {
+    return render(request, 'myemailer/draft.html', {
+        "main_nav": main_nav(request.user, 'staff_view'),
+        "tasks_nav": tasks_nav(request.user, 'emailer'),
+        "steps_nav": steps_nav(request.user, 'draft'),
         "form": form,
         "args": request.GET,
-        "nav_staff": StaffNav(request.path),
-        "nav_mailer": EmailerNav(request.path),
         "message_body": emailer.body,
         "message_subject": emailer.subject
     })
 
-def email_send_view(request):
-    Log_Request(request)
-
-    # get the user's message object
-    profile = request.user.get_profile()
-    prefs = profile.prefs
-    try:
-        pk=prefs["email_message_pk"]
-    except:
-        pk = None
-    emailer = Message.factory(user=request.user, pk=pk)
-    prefs['email_message_pk'] = emailer.id
-    profile.prefs = prefs
-    profile.save()
- 
+def send_view(request):
+    #Log_Request(request)
+    emailer = task_object(request.user)
     if request.method == 'POST':
         form = Emailer_Send_Form(
             data=request.POST
@@ -145,33 +111,22 @@ def email_send_view(request):
                     profile.prefs = prefs
                     profile.save()
                     return redirect('email_archive_view')
-            return redirect('email_send_view')
+            #return redirect('email_send_view')
     else:
         form = Emailer_Send_Form(initial={
         })
 
-    return render(request, 'mycoach3/emailer_send.html', {
+    return render(request, 'myemailer/send.html', {
+        "main_nav": main_nav(request.user, 'staff_view'),
+        "tasks_nav": tasks_nav(request.user, 'emailer'),
+        "steps_nav": steps_nav(request.user, 'send'),
         "form": form,
         "args": request.GET,
-        "nav_staff": StaffNav(request.path),
-        "nav_mailer": EmailerNav(request.path)
     })
 
-def email_archive_view(request):
-    Log_Request(request)
-
-    # get the user's message object
-    profile = request.user.get_profile()
-    prefs = profile.prefs
-    try:
-        pk=prefs["email_message_pk"]
-    except:
-        pk = None
-    emailer = Message.factory(user=request.user, pk=pk)
-    prefs['email_message_pk'] = emailer.id
-    profile.prefs = prefs
-    profile.save()
-
+def archive_view(request):
+    #Log_Request(request)
+    emailer = task_object(request.user)
     if request.method == 'POST':
         form = Emailer_Archive_Form(
             data=request.POST
@@ -182,16 +137,32 @@ def email_archive_view(request):
             # Copy the selected emailer 
             emailer = Message.copy(f_select_message, emailer)
             emailer.save()
-            return redirect('email_archive_view')
+            #return redirect('email_archive_view')
     else:
         form = Emailer_Archive_Form()
 
-    return render(request, 'mycoach3/emailer_archive.html', {
+    return render(request, 'myemailer/archive.html', {
+        "main_nav": main_nav(request.user, 'staff_view'),
+        "tasks_nav": tasks_nav(request.user, 'emailer'),
+        "steps_nav": steps_nav(request.user, 'archive'),
         "form": form,
         "args": request.GET,
-        "nav_staff": StaffNav(request.path),
-        "nav_mailer": EmailerNav(request.path),
         "emailer_name": emailer.get_name(),
         "emailer": emailer
     })
+
+def task_object(user):
+    # get the user's message object
+    profile = user.get_profile()
+    prefs = profile.prefs
+    try:
+        pk=prefs["email_message_pk"]
+    except:
+        pk = None
+    emailer = Message.factory(user=user, pk=pk)
+    prefs['email_message_pk'] = emailer.id
+    profile.prefs = prefs
+    profile.save()
+    return emailer
+     
 
