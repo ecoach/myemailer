@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.db import connection, transaction
 from django.core.mail import EmailMultiAlternatives
 from datetime import datetime
+from django.conf import settings
 
 # Create your models here.
 

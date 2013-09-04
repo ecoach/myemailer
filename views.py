@@ -1,4 +1,5 @@
 #from django.contrib.auth import login, authenticate, logout
+from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.shortcuts import render, render_to_response
 from mynav.nav import main_nav, tasks_nav
@@ -110,7 +111,7 @@ def send_view(request):
                     prefs['email_message_pk'] = emailer.id
                     profile.prefs = prefs
                     profile.save()
-                    return redirect('email_archive_view')
+                    return redirect(reverse('myemailer:archive'))
             #return redirect('email_send_view')
     else:
         form = Emailer_Send_Form(initial={
