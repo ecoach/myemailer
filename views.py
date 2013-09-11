@@ -14,7 +14,6 @@ from .forms import (
 from django.shortcuts import redirect
 
 def bcc_view(request):
-    #Log_Request(request)
     emailer = task_object(request.user)
     if request.method == 'POST':
         form = Emailer_Bcc_Form(
@@ -58,7 +57,6 @@ def bcc_view(request):
     })
 
 def draft_view(request):
-    #Log_Request(request)
     emailer = task_object(request.user)
     if request.method == 'POST':
         form = Emailer_Draft_Form(
@@ -72,11 +70,10 @@ def draft_view(request):
             emailer.body = f_body 
             emailer.save()
             #return redirect('email_draft_view')
-    else:
-        form = Emailer_Draft_Form(initial={
-            'subject' : emailer.subject, 
-            'body': emailer.body
-        })
+    form = Emailer_Draft_Form(initial={
+        'subject' : emailer.subject, 
+        'body': emailer.body
+    })
 
     return render(request, 'myemailer/draft.html', {
         "main_nav": main_nav(request.user, 'staff_view'),
@@ -89,7 +86,6 @@ def draft_view(request):
     })
 
 def send_view(request):
-    #Log_Request(request)
     emailer = task_object(request.user)
     if request.method == 'POST':
         form = Emailer_Send_Form(
@@ -112,9 +108,8 @@ def send_view(request):
                     profile.save()
                     return redirect(reverse('myemailer:archive'))
             #return redirect('email_send_view')
-    else:
-        form = Emailer_Send_Form(initial={
-        })
+    form = Emailer_Send_Form(initial={
+    })
 
     return render(request, 'myemailer/send.html', {
         "main_nav": main_nav(request.user, 'staff_view'),
