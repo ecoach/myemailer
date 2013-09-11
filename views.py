@@ -40,13 +40,12 @@ def bcc_view(request):
                 emailer.bcc_query = BCC_Query.copy(f_select_bcc, emailer.bcc_query)
             emailer.save()
             #return redirect('email_bcc_view')
-    else:
-        form = Emailer_Bcc_Form(initial={
-            'select_bcc' : emailer.bcc_query.id, 
-            'query_name': emailer.bcc_query.name, 
-            'sql': emailer.bcc_query.sql, 
-            'commit': 0
-        })
+    form = Emailer_Bcc_Form(initial={
+        'select_bcc' : emailer.bcc_query.id, 
+        'query_name': emailer.bcc_query.name, 
+        'sql': emailer.bcc_query.sql, 
+        'commit': 0
+    })
 
     return render(request, 'myemailer/bcc.html', {
         "main_nav": main_nav(request.user, 'staff_view'),
