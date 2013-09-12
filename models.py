@@ -39,16 +39,17 @@ class BCC_Query(models.Model):
     def get_bcc(self):
         cursor = connection.cursor()
         try:
-            # update myemailer_bcc_query set myemailer_bcc_query.sql = concat("select user_id from mydata3_w_13data where ", myemailer_bcc_query.sql);
-            # query = "select user_id from mydata3_w_13data where " + self.sql
             query = self.sql
             res = cursor.execute(query)
             res = cursor.fetchall()
-            tup = list(zip(*res)[0])
-            arr = []
-            for i in tup:
-                arr.append(str(i + '@umich.edu'))
-            ret = arr
+            if len(res) > 0:
+                tup = list(zip(*res)[0])
+                arr = []
+                for i in tup:
+                    arr.append(str(i + '@umich.edu'))
+                ret = arr
+            else:
+                ret = []
         except:
             ret = 'sql error'
         return ret
@@ -99,10 +100,11 @@ class Message(models.Model):
 
     def send(self, username, action):
         # message settings
-        if username == 'jtritz':
+        if username == 'jtritz' or username == 'michelot':
             #sentfrom = 'ecoach-help@umich.edu'
             sentfrom = settings.COACH_EMAIL
-            sendto = ['jtritz@umich.edu']
+            #sendto = ['jtritz@umich.edu']
+            sendto = [username+'@umich.edu']
             bcc = self.bcc_query.get_bcc()
             subject = self.subject 
             bodytext = 'html message'
@@ -124,7 +126,8 @@ class Message(models.Model):
                     sentfrom,
                     sendto, 
                     bcc, 
-                    headers = {'Reply-To': 'ecoach-help@umich.edu'}
+                    #headers = {'Reply-To': 'ecoach-help@umich.edu'}
+                    headers = {'Reply-To': settings.COACH_EMAIL}
                 )
                 message.attach_alternative(html_content, "text/html")
                 #message.attach_file(self.m_attached_filepath)
