@@ -41,7 +41,7 @@
 <table width='100%'>
     <tr>
         <td valign='top'>
-        {{ message_subject }}
+        {{ message_subject|safe}}
         <hr>
         {{ message_body|safe}}
         </td>
