@@ -14,7 +14,7 @@ class Emailer_Bcc_Form(forms.Form):
         super(Emailer_Bcc_Form, self).__init__(*args, **kwargs)
 
 class Emailer_Draft_Form(forms.Form):
-    subject  = forms.CharField(required=False, widget=forms.Textarea(attrs={'cols': 60, 'rows': 1}))
+    subject  = forms.CharField(required=False, widget=forms.Textarea(attrs={'cols': 100, 'rows': 1}))
     body = forms.CharField(required=False, widget=forms.Textarea(attrs={'class': 'input-xxlarge'}))
     
 
