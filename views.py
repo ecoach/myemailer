@@ -1,3 +1,4 @@
+from django.contrib.admin.views.decorators import staff_member_required
 #from django.contrib.auth import login, authenticate, logout
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
@@ -13,6 +14,7 @@ from .forms import (
     )
 from django.shortcuts import redirect
 
+@staff_member_required
 def bcc_view(request):
     emailer = task_object(request.user)
     if request.method == 'POST':
@@ -56,6 +58,7 @@ def bcc_view(request):
         "bcc_query_result": emailer.bcc_query.get_bcc()
     })
 
+@staff_member_required
 def draft_view(request):
     emailer = task_object(request.user)
     if request.method == 'POST':
@@ -85,6 +88,7 @@ def draft_view(request):
         "message_subject": emailer.subject
     })
 
+@staff_member_required
 def send_view(request):
     emailer = task_object(request.user)
     if request.method == 'POST':
@@ -119,6 +123,7 @@ def send_view(request):
         "args": request.GET,
     })
 
+@staff_member_required
 def archive_view(request):
     #Log_Request(request)
     emailer = task_object(request.user)
