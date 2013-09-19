@@ -100,7 +100,7 @@ class Message(models.Model):
 
     def send(self, username, action):
         # message settings
-        if username == 'jtritz' or username == 'michelot':
+        if username == 'jtritz' or username == 'michelot' or username == 'jbrancho':
             #sentfrom = 'ecoach-help@umich.edu'
             sentfrom = settings.COACH_EMAIL
             #sendto = ['jtritz@umich.edu']
