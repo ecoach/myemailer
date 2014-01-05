@@ -1,9 +1,14 @@
 from django.db import models
-from django.contrib.auth.models import User
 from django.db import connection, transaction
 from django.core.mail import EmailMultiAlternatives
 from datetime import datetime
 from django.conf import settings
+import django
+if django.VERSION[1] > 3:
+    from myauth.models import UserProfile as User
+else:
+    from django.contrib.auth.models import User as User
+
 
 # Create your models here.
 

@@ -3,7 +3,6 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.shortcuts import render, render_to_response
-from mynav.nav import main_nav, tasks_nav
 from .models import Message, BCC_Query
 from .steps import steps_nav
 from .forms import (
@@ -13,6 +12,12 @@ from .forms import (
     Emailer_Archive_Form
     )
 from django.shortcuts import redirect
+
+import django
+if django.VERSION[1] > 3:
+    from mynav.mycoach_nav import main_nav, tasks_nav
+else:
+    from mynav.nav import main_nav, tasks_nav
 
 @staff_member_required
 def bcc_view(request):
@@ -104,12 +109,15 @@ def send_view(request):
                 # send the message
                 if emailer.send(username=request.user.username, action=f_commit):
                     # make new emailer and save to prefs
-                    profile = request.user.get_profile()
-                    prefs = profile.prefs
                     emailer = Message.factory(user=request.user, pk=None)
-                    prefs['email_message_pk'] = emailer.id
-                    profile.prefs = prefs
-                    profile.save()
+                    if django.VERSION[1] > 3:
+                        user.set_pref('email_message_pk', emailer.id)
+                    else:
+                        profile = request.user.get_profile()
+                        prefs = profile.prefs
+                        prefs['email_message_pk'] = emailer.id
+                        profile.prefs = prefs
+                        profile.save()
                     return redirect(reverse('myemailer:archive'))
             #return redirect('email_send_view')
     form = Emailer_Send_Form(initial={
@@ -153,16 +161,22 @@ def archive_view(request):
 
 def task_object(user):
     # get the user's message object
-    profile = user.get_profile()
-    prefs = profile.prefs
-    try:
-        pk=prefs["email_message_pk"]
-    except:
-        pk = None
-    emailer = Message.factory(user=user, pk=pk)
-    prefs['email_message_pk'] = emailer.id
-    profile.prefs = prefs
-    profile.save()
-    return emailer
+    if django.VERSION[1] > 3:
+        pk = user.get_pref('email_message_pk')
+        emailer = Message.factory(user=user, pk=pk)
+        user.set_pref('email_message_pk', emailer.id)
+        return emailer
+    else:
+        profile = user.get_profile()
+        prefs = profile.prefs
+        try:
+            pk=prefs["email_message_pk"]
+        except:
+            pk = None
+        emailer = Message.factory(user=user, pk=pk)
+        prefs['email_message_pk'] = emailer.id
+        profile.prefs = prefs
+        profile.save()
+        return emailer
      
 
